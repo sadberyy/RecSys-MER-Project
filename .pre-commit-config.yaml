@@ -15,4 +15,4 @@ repos:
       - id: nbqa-black
         additional_dependencies: [black==25.1.0]
       - id: nbqa-ruff
-        additional_dependencies: [ruff==v0.9.4]
+        additional_dependencies: [ruff==0.9.4]

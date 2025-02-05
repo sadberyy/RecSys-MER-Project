@@ -17,3 +17,4 @@ repos:
         additional_dependencies: [black==25.1.0]
       - id: nbqa-ruff
         additional_dependencies: [ruff==0.9.4]
+        args: [--ignore=E402]

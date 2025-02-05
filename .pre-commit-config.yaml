@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 24.1.0  # Актуальная версия Black
+    rev: 24.1.0
     hooks:
       - id: black
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.3.4  # Актуальная версия Ruff
+    rev: v0.3.4
     hooks:
       - id: ruff
       - id: ruff-format

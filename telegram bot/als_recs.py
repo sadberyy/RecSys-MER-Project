@@ -25,4 +25,3 @@ def get_als_recommendations(user_id, model, user_encoder, track_encoder, minfo, 
     except Exception as e:
         print(f"Ошибка в генерации рекомендаций {str(e)}")
         return pd.DataFrame(columns =["artist", "name"])
-    

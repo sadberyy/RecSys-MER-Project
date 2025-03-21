@@ -5,7 +5,7 @@ import pickle
 from implicit.als import AlternatingLeastSquares
 from scipy.sparse import csr_matrix
 from TopPopular_file import load_model_toppop
-import bot2
+import bot
 
 
 user_history_path = "UserListening History.csv"  
@@ -28,20 +28,20 @@ minfo = artifacts["minfo"]
 TopPopular_path = 'TopPopular_model.pkl'
 TopPopular_loaded_model = load_model_toppop(TopPopular_path)
 
-
 def build_user_item_matrix(user_history, user_encoder, track_encoder):
     user_history = user_history.dropna(subset=["user_id", "track_id"]) 
     user_ids = user_encoder.transform(user_history["user_id"])
     track_ids = track_encoder.transform(user_history["track_id"])
-    data = [1] * len(user_ids)  
+    data = [1] * len(user_ids) 
     user_item_matrix = csr_matrix(
         (data, (user_ids, track_ids)),
-        shape=(len(user_encoder.classes_), len(track_encoder.classes_))
+        shape=(len(user_encoder), len(track_encoder))  
     )
     
     return user_item_matrix
 
 user_item_matrix = build_user_item_matrix(user_history, user_encoder, track_encoder)
+
 
 def get_als_recommendations(user_id, model, user_encoder, track_encoder, minfo, user_item_matrix, history_df, top_k = 10):
     try:
@@ -97,4 +97,6 @@ def get_recommendations(user_id:int, topn:int = 10)-> pd.DataFrame:
         return get_als_recommendations(user_id, als_model, user_encoder, track_encoder, songs, user_item_matrix, user_history, top_k=topn)
     
     
+
+
 

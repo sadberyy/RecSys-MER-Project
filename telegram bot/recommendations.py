@@ -1,11 +1,10 @@
+import os
+import random
 import pandas as pd
-import catboost
-from TopPopular_file import load_from_cbm
-# from als_recs import get_als_recommendations
 import pickle
 from implicit.als import AlternatingLeastSquares
 from scipy.sparse import csr_matrix
-# from bot2 import flags, user_data
+from TopPopular_file import load_model_toppop
 import bot2
 
 
@@ -26,8 +25,8 @@ track_encoder = artifacts["track_encoder"]
 minfo = artifacts["minfo"]
 
 
-TopPopular_path = 'TopPopular_model.cbm'
-TopPopular_loaded_model = load_from_cbm(TopPopular_path)
+TopPopular_path = 'TopPopular_model.pkl'
+TopPopular_loaded_model = load_model_toppop(TopPopular_path)
 
 
 def build_user_item_matrix(user_history, user_encoder, track_encoder):
@@ -47,7 +46,8 @@ user_item_matrix = build_user_item_matrix(user_history, user_encoder, track_enco
 def get_als_recommendations(user_id, model, user_encoder, track_encoder, minfo, user_item_matrix, history_df, top_k = 10):
     try:
         if user_id not in user_encoder.classes_:
-            return pd.DataFrame(columns = ["artist", "name"])
+            print(f"Пользователь {user_id} не найден в ALS, переключаемся на TopPopular")
+            return recommend_top_popular(user_id, top_k)
         internal_id = user_encoder.transform([user_id])[0]
         if internal_id >= user_item_matrix.shape[0]:
             return pd.DataFrame(columns = ["artist", "name"])
@@ -65,11 +65,27 @@ def get_als_recommendations(user_id, model, user_encoder, track_encoder, minfo, 
         return pd.DataFrame(columns =["artist", "name"])
     
 
-def recommend_top_popular(user_id:int, topn:int = 10)-> pd.DataFrame:    
-    recommendations = TopPopular_loaded_model.predict(user_history, topn=topn)
-    recommended_tracks = recommendations[0]
-    recommended_songs = songs[songs["track_id"].isin(recommended_tracks)]
-    return recommended_songs
+def recommend_top_popular(user_id: int, topn: int = 10) -> pd.DataFrame:    
+    predictions_path = 'TopPopular_predictions.pkl'
+
+    if not os.path.exists(predictions_path):
+        raise FileNotFoundError(f"Файл {predictions_path} не найден! Пересчитайте предсказания.")
+
+    with open(predictions_path, 'rb') as f:
+        recommended_track_ids = pickle.load(f)
+
+    random_index = random.randint(0, len(recommended_track_ids) - 1)
+    random_recommendations = recommended_track_ids[random_index]
+
+    recommended_songs = []
+    for track_id in random_recommendations:
+        track_data = songs.loc[songs['track_id'] == track_id, ['name', 'artist']]
+        if not track_data.empty:
+            recommended_songs.append(track_data.iloc[0])
+        else:
+            recommended_songs.append(pd.Series({"name": "Unknown", "artist": "Unknown"}))
+    
+    return pd.DataFrame(recommended_songs)
 
 
 def get_recommendations(user_id:int, topn:int = 10)-> pd.DataFrame:

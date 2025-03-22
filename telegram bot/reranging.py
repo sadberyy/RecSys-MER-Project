@@ -9,7 +9,6 @@ def rearrange_tracks(user_mood, tracks_with_moods):
     def mood_similarity(user_mood, tracks_with_moods):
         return abs(mood_values[user_mood] - mood_values[tracks_with_moods])
 
-
     sorted_tracks = sorted(tracks_with_moods, key=lambda track: mood_similarity(user_mood, track['mood']))
 
     return sorted_tracks

@@ -46,25 +46,3 @@ toppop = TopPopular()
 toppop.fit(user_history)
 
 save_model_toppop(toppop, 'TopPopular_model2.pkl')
-# TopPopular_loaded_model = load_model_toppop('TopPopular_model2.pkl')
-
-# recommended_track_ids = TopPopular_loaded_model.predict(user_history, topn=10)
-
-
-# recommendations_with_names = []
-# for track_list in tqdm(recommended_track_ids, desc="get recommendations"):
-#     recommendations_with_names.append([
-#         {
-#             "track_id": track_id,
-#             "name": track_info_dict.get(track_id, {}).get("name", "Unknown"),
-#             "artist": track_info_dict.get(track_id, {}).get("artist", "Unknown")
-#         }
-#         for track_id in track_list
-#     ])
-
-
-# for i, recs in enumerate(recommendations_with_names[:5]): 
-#     print(f"Пользователь {i + 1}:")
-#     for rec in recs:
-#         print(f" - {rec['name']} ({rec['artist']})")
-#     print()

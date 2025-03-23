@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 
 CHOOSING_MOOD = 0
 
+user_data = 0
+df = pandas.read_csv("todobot/User Listening History.csv")
+flags = {}
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("Список команд:\n"
@@ -123,13 +126,6 @@ async def recommend_tracks_by_emotion(update: Update, context: CallbackContext) 
     else:
         await update.message.reply_text(
             "Вы пока не выбрали настроение. Используйте команду /choose_mood, чтобы выбрать.")
-
-
-user_data = 0
-df = pandas.read_csv("todobot/User Listening History.csv")
-
-flags = {}
-
 
 def is_user_new(from_tg_user_id: str) -> bool:
     result = df.loc[df['user_id'] == from_tg_user_id]

@@ -20,7 +20,3 @@ def rearrange_tracks(user_mood, tracks_with_moods):
 
     return sorted_tracks
 
-def print_sorted(user_mood, tracks_with_moods):
-    sorted_tracks = rearrange_tracks(user_mood, tracks_with_moods)
-    for track in sorted_tracks:
-        print(f'{track["track_name"]} - {track["mood"]}')
